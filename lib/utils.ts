@@ -1,7 +1,7 @@
 "use client";
 
 type ClassDictionary = Record<string, boolean | string | number | null | undefined>;
-type ClassValue = string | ClassValue[] | ClassDictionary | null | undefined;
+type ClassValue = string | boolean | ClassValue[] | ClassDictionary | null | undefined;
 
 /**
  * Lightweight className concatenation helper inspired by clsx/tailwind-merge.
