@@ -63,9 +63,13 @@ export function DialogTrigger({ children, asChild }: DialogTriggerProps) {
   const child = React.isValidElement(children) ? children : null;
 
   if (asChild && child) {
-    return React.cloneElement(child, {
+    const triggerChild =
+      child as React.ReactElement<{
+        onClick?: React.MouseEventHandler<HTMLElement>;
+      }>;
+    return React.cloneElement(triggerChild, {
       onClick: (event: React.MouseEvent) => {
-        child.props?.onClick?.(event);
+        triggerChild.props?.onClick?.(event);
         if (!event.defaultPrevented) {
           setOpen(true);
         }
@@ -206,9 +210,13 @@ export const DialogClose = ({
   const child = React.isValidElement(children) ? children : null;
 
   if (asChild && child) {
-    return React.cloneElement(child, {
+    const closeChild =
+      child as React.ReactElement<{
+        onClick?: React.MouseEventHandler<HTMLElement>;
+      }>;
+    return React.cloneElement(closeChild, {
       onClick: (event: React.MouseEvent) => {
-        child.props?.onClick?.(event);
+        closeChild.props?.onClick?.(event);
         if (!event.defaultPrevented) {
           setOpen(false);
         }
