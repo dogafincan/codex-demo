@@ -18,6 +18,14 @@ export interface DropdownMenuProps {
   children: React.ReactNode;
 }
 
+function setRefValue<T>(ref: React.Ref<T> | undefined, value: T | null) {
+  if (typeof ref === "function") {
+    ref(value);
+  } else if (ref) {
+    (ref as React.MutableRefObject<T | null>).current = value;
+  }
+}
+
 export function DropdownMenu({
   open,
   onOpenChange,
@@ -66,25 +74,36 @@ export function DropdownMenuTrigger({
   children,
   asChild,
 }: DropdownMenuTriggerProps) {
-  const { setOpen, triggerRef, open } = useDropdown();
+  const { setOpen, triggerRef } = useDropdown();
   const child = React.isValidElement(children) ? children : null;
+  const childRef = child?.ref;
+  const childOnClick = child?.props?.onClick;
 
-  const toggle = () => setOpen(!open);
+  const toggle = React.useCallback(() => {
+    setOpen((prev) => !prev);
+  }, [setOpen]);
+
+  const assignTriggerRef = React.useCallback(
+    (node: HTMLElement | null) => {
+      setRefValue(childRef, node);
+      triggerRef.current = node;
+    },
+    [childRef, triggerRef],
+  );
+
+  const handleChildClick = React.useCallback(
+    (event: React.MouseEvent) => {
+      childOnClick?.(event);
+      if (!event.defaultPrevented) toggle();
+    },
+    [childOnClick, toggle],
+  );
 
   if (asChild && child) {
+    // eslint-disable-next-line react-hooks/refs -- ref callback executes after render to bridge consumer ref with internal positioning ref
     return React.cloneElement(child, {
-      ref: (node: HTMLElement) => {
-        if (typeof child.ref === "function") child.ref(node);
-        else if (child.ref) {
-          (child.ref as React.MutableRefObject<HTMLElement | null>).current =
-            node;
-        }
-        triggerRef.current = node;
-      },
-      onClick: (event: React.MouseEvent) => {
-        child.props?.onClick?.(event);
-        if (!event.defaultPrevented) toggle();
-      },
+      ref: assignTriggerRef,
+      onClick: handleChildClick,
     });
   }
 
