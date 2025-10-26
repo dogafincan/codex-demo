@@ -3,19 +3,19 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "FlowFocus | Pomodoro Tracker",
-  description:
-    "A focused Pomodoro tracker with customizable timers, local insights, and delightful reminders.",
+	title: "FlowFocus | Pomodoro Tracker",
+	description:
+		"A focused Pomodoro tracker with customizable timers, local insights, and delightful reminders.",
 };
 
 const themeInitializer = `(() => {
@@ -32,20 +32,21 @@ const themeInitializer = `(() => {
 })();`;
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitializer }} />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-zinc-50 text-zinc-900 antialiased transition-colors dark:bg-zinc-950 dark:text-zinc-50 font-sans`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en" suppressHydrationWarning>
+			<head>
+				{/** biome-ignore lint/security/noDangerouslySetInnerHtml: theme initialization script prevents flash */}
+				<script dangerouslySetInnerHTML={{ __html: themeInitializer }} />
+			</head>
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} bg-zinc-50 text-zinc-900 antialiased transition-colors dark:bg-zinc-950 dark:text-zinc-50 font-sans`}
+			>
+				{children}
+			</body>
+		</html>
+	);
 }

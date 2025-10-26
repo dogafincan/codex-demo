@@ -1,5 +1,6 @@
 "use client";
 
+// biome-ignore assist/source/organizeImports: imports organized manually for better readability
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -356,9 +357,10 @@ export default function HomePage() {
 			};
 		});
 	}, [
-		settings.workDuration, 
-		settings.shortBreakDuration, 
-		settings.longBreakDuration, settings
+		settings.workDuration,
+		settings.shortBreakDuration,
+		settings.longBreakDuration,
+		settings,
 	]);
 
 	const toggleRunning = React.useCallback(() => {
@@ -417,8 +419,7 @@ export default function HomePage() {
 
 	const todayCount = stats.byDay[todayKey()] ?? 0;
 	const upcomingFlow = React.useMemo(() => {
-		const index = SESSION_FLOW_ORDER.indexOf(state.sessionType,
-		);
+		const index = SESSION_FLOW_ORDER.indexOf(state.sessionType);
 		const cycle = SESSION_FLOW_ORDER.slice(index === -1 ? 0 : index);
 		return [...cycle, ...SESSION_FLOW_ORDER].slice(0, 4);
 	}, [state.sessionType]);
@@ -666,7 +667,10 @@ export default function HomePage() {
 									<div className="flex flex-wrap gap-2">
 										{upcomingFlow.map((phase, index) => (
 											<span
-												key={`${phase}-${index}`}
+												key={`${phase}-${
+													// biome-ignore lint/suspicious/noArrayIndexKey: phases are stable and order matters
+													index
+												}`}
 												className={cn(
 													"inline-flex items-center rounded-full border border-zinc-200 px-3 py-1 text-xs font-medium uppercase tracking-wide text-zinc-500 dark:border-zinc-800 dark:text-zinc-400",
 													index === 0 &&
